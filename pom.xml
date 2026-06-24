@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.jide</groupId>
+  <artifactId>restassured-testng-framework</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <testng.version>7.10.2</testng.version>
+    <restassured.version>5.5.0</restassured.version>
+    <hamcrest.version>2.2</hamcrest.version>
+    <jackson.version>2.17.1</jackson.version>
+    <jackson-xml.version>2.17.1</jackson-xml.version>
+    <json-schema-validator.version>5.5.0</json-schema-validator.version>
+    <surefire.version>3.2.5</surefire.version>
+    <slf4j.version>2.0.13</slf4j.version>
+    <allure.version>2.27.0</allure.version>
+    <aspectj.version>1.9.22</aspectj.version>
+  </properties>
+
+  <dependencies>
+
+    <!-- TestNG -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- RestAssured core -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <version>${restassured.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- JSON Schema validation -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>json-schema-validator</artifactId>
+      <version>${json-schema-validator.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- XML support for RestAssured -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>xml-path</artifactId>
+      <version>${restassured.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Hamcrest matchers -->
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Jackson JSON serialisation -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Jackson XML serialisation (for XML POJOs) -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>${jackson-xml.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Logging -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Allure TestNG integration -->
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-testng</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Allure RestAssured filter — auto-attaches HTTP requests and responses
+         as Allure report attachments so every test step shows the full
+         request/response without any manual code in test classes -->
+    <dependency>
+      <groupId>io.qameta.allure</groupId>
+      <artifactId>allure-rest-assured</artifactId>
+      <version>${allure.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- AspectJ weaver — required for @Step annotations to work.
+         Allure uses AspectJ AOP (Aspect-Oriented Programming) to intercept
+         calls to methods annotated with @Step and record them as named steps
+         in the report. Without the weaver on the JVM's javaagent, @Step
+         annotations compile and run but have no effect on the report. -->
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjweaver</artifactId>
+      <version>${aspectj.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${surefire.version}</version>
+        <configuration>
+          <!-- Default: run the parallel suite -->
+          <suiteXmlFiles>
+            <suiteXmlFile>testng-parallel.xml</suiteXmlFile>
+          </suiteXmlFiles>
+          <!-- 1 JVM fork per core; tests parallelise inside via TestNG threads -->
+          <forkCount>1C</forkCount>
+          <reuseForks>true</reuseForks>
+          <!-- aspectjweaver must be on the JVM javaagent so @Step AOP
+               interception works at runtime. Without this, @Step annotations
+               have no effect and Allure report shows no step breakdown. -->
+          <argLine>
+            -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
+            -Xmx1024m
+          </argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Allure Maven plugin — generates the HTML report from raw JSON
+           results written to target/allure-results during the test run.
+           Run: mvn allure:report   (generate only)
+                mvn allure:serve    (generate + open browser automatically) -->
+      <plugin>
+        <groupId>io.qameta.allure</groupId>
+        <artifactId>allure-maven</artifactId>
+        <version>2.12.0</version>
+        <configuration>
+          <reportVersion>${allure.version}</reportVersion>
+          <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
+          <reportDirectory>${project.build.directory}/allure-report</reportDirectory>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>
