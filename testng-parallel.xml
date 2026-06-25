@@ -1,0 +1,23 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="RestAssuredFramework-Parallel"
+       parallel="methods"
+       thread-count="8"
+       data-provider-thread-count="4"
+       verbose="1">
+
+  <listeners>
+    <listener class-name="com.jide.framework.listeners.TestListener"/>
+  </listeners>
+
+  <test name="AllAPITests">
+    <classes>
+      <class name="com.jide.framework.tests.get.GetRequestsTest"/>
+      <class name="com.jide.framework.tests.post.PostRequestsTest"/>
+      <class name="com.jide.framework.tests.put.PutRequestsTest"/>
+      <class name="com.jide.framework.tests.patch.PatchRequestsTest"/>
+      <class name="com.jide.framework.tests.delete.DeleteRequestsTest"/>
+      <class name="com.jide.framework.tests.headoptions.HeadOptionsTest"/>
+    </classes>
+  </test>
+
+</suite>

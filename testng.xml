@@ -1,0 +1,44 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="RestAssuredFramework-Sequential" verbose="1">
+
+  <listeners>
+    <listener class-name="com.jide.framework.listeners.TestListener"/>
+  </listeners>
+
+  <test name="GET Tests">
+    <classes>
+      <class name="com.jide.framework.tests.get.GetRequestsTest"/>
+    </classes>
+  </test>
+
+  <test name="POST Tests">
+    <classes>
+      <class name="com.jide.framework.tests.post.PostRequestsTest"/>
+    </classes>
+  </test>
+
+  <test name="PUT Tests">
+    <classes>
+      <class name="com.jide.framework.tests.put.PutRequestsTest"/>
+    </classes>
+  </test>
+
+  <test name="PATCH Tests">
+    <classes>
+      <class name="com.jide.framework.tests.patch.PatchRequestsTest"/>
+    </classes>
+  </test>
+
+  <test name="DELETE Tests">
+    <classes>
+      <class name="com.jide.framework.tests.delete.DeleteRequestsTest"/>
+    </classes>
+  </test>
+
+  <test name="HEAD and OPTIONS Tests">
+    <classes>
+      <class name="com.jide.framework.tests.headoptions.HeadOptionsTest"/>
+    </classes>
+  </test>
+
+</suite>
