@@ -2,9 +2,9 @@ package com.jide.framework.assertions;
 
 import io.restassured.response.Response;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -49,7 +49,7 @@ public class ApiResponseAssert {
     // -------------------------------------------------------------------------
 
     public ApiResponseAssert hasStatus(int expectedStatus) {
-        assertThat("HTTP status code",
+        MatcherAssert.assertThat("HTTP status code",
             response.getStatusCode(), equalTo(expectedStatus));
         return this;
     }
@@ -60,7 +60,7 @@ public class ApiResponseAssert {
         for (int s : expectedStatuses) {
             if (actual == s) { matched = true; break; }
         }
-        assertThat("HTTP status code " + actual + " not in expected set",
+        MatcherAssert.assertThat("HTTP status code " + actual + " not in expected set",
             matched, is(true));
         return this;
     }
@@ -70,19 +70,19 @@ public class ApiResponseAssert {
     // -------------------------------------------------------------------------
 
     public ApiResponseAssert hasHeader(String name, String expectedValue) {
-        assertThat("Header '" + name + "'",
+        MatcherAssert.assertThat("Header '" + name + "'",
             response.getHeader(name), equalTo(expectedValue));
         return this;
     }
 
     public ApiResponseAssert hasHeader(String name, Matcher<String> matcher) {
-        assertThat("Header '" + name + "'",
+        MatcherAssert.assertThat("Header '" + name + "'",
             response.getHeader(name), matcher);
         return this;
     }
 
     public ApiResponseAssert hasHeaderPresent(String name) {
-        assertThat("Header '" + name + "' should be present",
+        MatcherAssert.assertThat("Header '" + name + "' should be present",
             response.getHeader(name), notNullValue());
         return this;
     }
@@ -92,26 +92,26 @@ public class ApiResponseAssert {
     // -------------------------------------------------------------------------
 
     public ApiResponseAssert hasJsonPath(String path, Object expectedValue) {
-        assertThat("JSON path '" + path + "'",
+        MatcherAssert.assertThat("JSON path '" + path + "'",
             response.jsonPath().get(path), equalTo(expectedValue));
         return this;
     }
 
     public <T> ApiResponseAssert hasJsonPath(String path, Matcher<T> matcher) {
-        assertThat("JSON path '" + path + "'",
+        MatcherAssert.assertThat("JSON path '" + path + "'",
             response.jsonPath().<T>get(path), matcher);
         return this;
     }
 
     public ApiResponseAssert hasJsonPathPresent(String path) {
-        assertThat("JSON path '" + path + "' should be present",
+        MatcherAssert.assertThat("JSON path '" + path + "' should be present",
             response.jsonPath().get(path), notNullValue());
         return this;
     }
 
     public ApiResponseAssert bodyIsEmptyOrNull() {
         String body = response.getBody().asString();
-        assertThat("Body should be empty or null",
+        MatcherAssert.assertThat("Body should be empty or null",
             body == null || body.trim().isEmpty() || body.trim().equals("{}") || body.trim().equals("null"),
             is(true));
         return this;
@@ -122,13 +122,13 @@ public class ApiResponseAssert {
     // -------------------------------------------------------------------------
 
     public ApiResponseAssert hasXmlPath(String path, String expectedValue) {
-        assertThat("XML path '" + path + "'",
+        MatcherAssert.assertThat("XML path '" + path + "'",
             response.xmlPath().getString(path), equalTo(expectedValue));
         return this;
     }
 
     public ApiResponseAssert hasXmlPath(String path, Matcher<String> matcher) {
-        assertThat("XML path '" + path + "'",
+        MatcherAssert.assertThat("XML path '" + path + "'",
             response.xmlPath().getString(path), matcher);
         return this;
     }
@@ -166,7 +166,7 @@ public class ApiResponseAssert {
     // -------------------------------------------------------------------------
 
     public ApiResponseAssert respondsWithinMs(long maxMilliseconds) {
-        assertThat("Response time should be under " + maxMilliseconds + "ms",
+        MatcherAssert.assertThat("Response time should be under " + maxMilliseconds + "ms",
             response.getTime(), lessThan(maxMilliseconds));
         return this;
     }
